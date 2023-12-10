@@ -1,6 +1,5 @@
-from pprint import pprint
 from dataclasses import dataclass
-from typing import Optional, Generator
+from typing import Generator
 
 
 @dataclass(frozen=True)
@@ -18,7 +17,6 @@ Solution = list[tuple[Weapon, Minion]]
 
 
 def main() -> None:
-    # Might wanna just turn this into a list[Weapon].
     weapons = {
         name: Weapon(name)
         for name in [
@@ -55,11 +53,10 @@ def main() -> None:
 
 def solve(weapons: dict[str, Weapon], minions: list[Minion]) -> list[Solution]:
     available_weapons = set(weapons.values())
-    return list(solve_recursive(weapons, minions, available_weapons, 0, []))
+    return list(solve_recursive(minions, available_weapons, 0, []))
 
 
 def solve_recursive(
-    weapons: dict[str, Weapon],
     minions: list[Minion],
     available_weapons: set[Weapon],
     minion_index: int,
@@ -79,9 +76,8 @@ def solve_recursive(
             new_prefix.append((weapon, minion))
 
             for solution in solve_recursive(
-                weapons, minions, new_available_weapons, minion_index + 1, new_prefix
+                minions, new_available_weapons, minion_index + 1, new_prefix
             ):
-                # pprint([(weapon.name, minion.name) for weapon, minion in solution])
                 yield solution
 
 
