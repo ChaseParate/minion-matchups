@@ -13,7 +13,7 @@ class Minion:
     weaknesses: set[Weapon]
 
 
-Solution = list[tuple[Weapon, Minion]]
+Solution = list[Weapon]
 
 
 def main() -> None:
@@ -46,7 +46,7 @@ def main() -> None:
     solutions = solve(weapons, minions)
     for i, solution in enumerate(solutions, 1):
         print(f"Solution {i}:")
-        for weapon, minion in solution:
+        for weapon, minion in zip(solution, minions):
             print(f"{minion.name} is defeated by {weapon.name}.")
         print()
 
@@ -73,7 +73,7 @@ def solve_recursive(
             new_available_weapons = available_weapons - {weapon}
 
             new_prefix = prefix.copy()
-            new_prefix.append((weapon, minion))
+            new_prefix.append(weapon)
 
             yield from solve_recursive(
                 minions, new_available_weapons, minion_index + 1, new_prefix
