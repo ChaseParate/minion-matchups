@@ -1,4 +1,6 @@
+from pprint import pprint
 from dataclasses import dataclass
+from typing import Optional, Generator
 
 
 @dataclass(frozen=True)
@@ -12,7 +14,11 @@ class Minion:
     weaknesses: set[Weapon]
 
 
+Solution = list[tuple[Weapon, Minion]]
+
+
 def main() -> None:
+    # Might wanna just turn this into a list[Weapon].
     weapons = {
         name: Weapon(name)
         for name in [
@@ -26,8 +32,8 @@ def main() -> None:
         ]
     }
 
-    minions = {
-        name: Minion(name, {weapons[name] for name in weaknesses})
+    minions = [
+        Minion(name, {weapons[name] for name in weaknesses})
         for name, weaknesses in [
             ("Paragoomba", ["Jump", "FLUDD"]),
             ("Dry Bones", ["Ice Flower", "Light Box"]),
@@ -37,17 +43,46 @@ def main() -> None:
             ("Boo", ["Light Box", "Blue Shell"]),
             ("Lava Bubble", ["Ice Flower", "FLUDD"]),
         ]
-    }
+    ]
 
-    solution = solve(weapons, minions)
-    for weapon, minion in solution:
-        print(f"{minion.name} is defeated by {weapon.name}.")
+    solutions = solve(weapons, minions)
+    for i, solution in enumerate(solutions, 1):
+        print(f"Solution {i}:")
+        for weapon, minion in solution:
+            print(f"{minion.name} is defeated by {weapon.name}.")
+        print()
 
 
-def solve(
-    weapons: dict[str, Weapon], minions: dict[str, Minion]
-) -> list[tuple[Weapon, Minion]]:
-    return [(weapons["Jump"], minions["Paragoomba"])]
+def solve(weapons: dict[str, Weapon], minions: list[Minion]) -> list[Solution]:
+    available_weapons = set(weapons.values())
+    return list(solve_recursive(weapons, minions, available_weapons, 0, []))
+
+
+def solve_recursive(
+    weapons: dict[str, Weapon],
+    minions: list[Minion],
+    available_weapons: set[Weapon],
+    minion_index: int,
+    prefix: Solution,
+) -> Generator[Solution, None, None]:
+    if minion_index == len(minions):
+        yield prefix
+        return
+
+    minion = minions[minion_index]
+
+    for weapon in minion.weaknesses:
+        if weapon in available_weapons:
+            new_available_weapons = available_weapons - {weapon}
+
+            new_prefix = prefix.copy()
+            new_prefix.append((weapon, minion))
+
+            for solution in solve_recursive(
+                weapons, minions, new_available_weapons, minion_index + 1, new_prefix
+            ):
+                # pprint([(weapon.name, minion.name) for weapon, minion in solution])
+                yield solution
 
 
 if __name__ == "__main__":
