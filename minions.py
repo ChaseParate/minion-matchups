@@ -75,10 +75,9 @@ def solve_recursive(
             new_prefix = prefix.copy()
             new_prefix.append((weapon, minion))
 
-            for solution in solve_recursive(
+            yield from solve_recursive(
                 minions, new_available_weapons, minion_index + 1, new_prefix
-            ):
-                yield solution
+            )
 
 
 if __name__ == "__main__":
