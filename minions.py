@@ -58,8 +58,8 @@ def solve(weapons: dict[str, Weapon], minions: list[Minion]) -> list[Solution]:
 
 def solve_recursive(
     minions: list[Minion],
-    available_weapons: set[Weapon],
     minion_index: int,
+    available_weapons: set[Weapon],
     prefix: Solution,
 ) -> Generator[Solution, None, None]:
     if minion_index == len(minions):
@@ -76,7 +76,7 @@ def solve_recursive(
             new_prefix.append(weapon)
 
             yield from solve_recursive(
-                minions, new_available_weapons, minion_index + 1, new_prefix
+                minions, minion_index + 1, new_available_weapons, new_prefix
             )
 
 
