@@ -53,7 +53,7 @@ def main() -> None:
 
 def solve(weapons: dict[str, Weapon], minions: list[Minion]) -> list[Solution]:
     available_weapons = set(weapons.values())
-    return list(solve_recursive(minions, available_weapons, 0, []))
+    return list(solve_recursive(minions, 0, available_weapons, []))
 
 
 def solve_recursive(
