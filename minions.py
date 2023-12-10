@@ -12,7 +12,6 @@ class Minion:
     weaknesses: set[Weapon]
 
 
-
 def main() -> None:
     weapons = {
         name: Weapon(name)
@@ -39,6 +38,16 @@ def main() -> None:
             ("Lava Bubble", ["Ice Flower", "FLUDD"]),
         ]
     }
+
+    solution = solve(weapons, minions)
+    for weapon, minion in solution:
+        print(f"{minion.name} is defeated by {weapon.name}.")
+
+
+def solve(
+    weapons: dict[str, Weapon], minions: dict[str, Minion]
+) -> list[tuple[Weapon, Minion]]:
+    return [(weapons["Jump"], minions["Paragoomba"])]
 
 
 if __name__ == "__main__":
